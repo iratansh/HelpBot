@@ -58,7 +58,7 @@ class HelpBot:
         except Exception as e:
             logging.error(f"Error training conversations from file: {e}")
 
-    def access_webpage(self, url):
+def access_webpage(self, url):
         """
         Access a webpage and return its content.
         Input: url (str)
@@ -68,9 +68,9 @@ class HelpBot:
             response = requests.get(url)
             response.raise_for_status()
             return response.text
-        except Exception as e:
+        except requests.exceptions.RequestException as e:
             logging.error(f"Error accessing webpage: {e}")
-            return "An error occurred while accessing the webpage."
+            return f"An error occurred while accessing the webpage: {e}"
 
     def get_weather(self, city, state=None, country=None):
         """
@@ -151,7 +151,7 @@ class HelpBot:
         elif "date" in statement.lower():
             return self.get_current_date()
         elif "webpage" in statement.lower() or self.contains_url(statement):
-            return self.train_for_webpage_content(statement)
+            return self.access_webpage(statement)
         elif self.contains_ticker_symbol(doc):
             ticker = self.extract_ticker_symbol(doc)
             if ticker:
