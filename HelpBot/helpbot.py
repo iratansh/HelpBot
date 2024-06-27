@@ -31,10 +31,13 @@ class HelpBot:
         self.last_result = None
         self.summarization_pipeline = pipeline("summarization", model="gpt2")
         self.generation_pipeline = MetaLlama()
+        # self.generation_pipeline = AutoModelForQuestionAnswering.from_pretrained("deepset/bert-base-cased-squad2") If you don't want to use MetaLlama and are willing to train your own model
         self.train_conversations_from_file('conversations.txt')
         logging.basicConfig(level=logging.INFO)
         self.context = deque(maxlen=10)  # Keep track of context
         self.translator = google_translator()
+        self.squad = load_dataset("squad") 
+        self.tokenizer = AutoTokenizer.from_pretrained("deepset/bert-base-cased-squad2")
 
     def train_conversations_from_file(self, filename):
         """
@@ -404,3 +407,80 @@ class HelpBot:
         """
         url_pattern = re.compile(r'https?://[^\s]+')
         return url_pattern.search(text) is not None
+
+        def preprocess_function(self, examples):
+        """
+        Preprocess the input data.
+        Input: examples (dict)
+        Output: inputs (dict)
+        """
+            questions = [q.strip() for q in examples["question"]]
+            inputs = self.tokenizer(
+                questions,
+                examples["context"],
+                max_length=512,
+                truncation="only_second",
+                return_offsets_mapping=True,
+                padding="max_length",
+            )
+    
+            offset_mapping = inputs.pop("offset_mapping")
+            answers = examples["answers"]
+            start_positions = []
+            end_positions = []
+    
+            for i, offset in enumerate(offset_mapping):
+                answer = answers[i]
+                start_char = answer["answer_start"][0]
+                end_char = answer["answer_start"][0] + len(answer["text"][0])
+                sequence_ids = inputs.sequence_ids(i)
+    
+                idx = 0
+                while sequence_ids[idx] != 1:
+                    idx += 1
+                context_start = idx
+                while sequence_ids[idx] == 1:
+                    idx += 1
+                context_end = idx - 1
+    
+                if offset[context_start][0] > end_char or offset[context_end][1] < start_char:
+                    start_positions.append(0)
+                    end_positions.append(0)
+                else:
+                    idx = context_start
+                    while idx <= context_end and offset[idx][0] <= start_char:
+                        idx += 1
+                    start_positions.append(idx - 1)
+    
+                    idx = context_end
+                    while idx >= context_start and offset[idx][1] >= end_char:
+                        idx -= 1
+                    end_positions.append(idx + 1)
+    
+            inputs["start_positions"] = start_positions
+            inputs["end_positions"] = end_positions
+            return inputs
+
+if __name__ == "__main__":
+    # OPTIONAL : if you want to train the model from scratch using the squad dataset
+    bot = HelpBot()
+    tokenized_squad = bot.squad.map(bot.preprocess_function, batched=True)
+    data_collator = DefaultDataCollator()
+    training_args = TrainingArguments(
+    output_dir="./results",
+    evaluation_strategy="epoch",
+    learning_rate=2e-5,
+    per_device_train_batch_size=2,
+    per_device_eval_batch_size=2,
+    num_train_epochs=2,
+    weight_decay=0.01,
+    )
+    trainer = Trainer(
+    model=bot.generation_pipeline,  # If you are not using MetaLlama and are using an untrained model
+    args=training_args,
+    train_dataset=tokenized_squad["train"],
+    eval_dataset=tokenized_squad["validation"],
+    tokenizer=bot.tokenizer,
+    data_collator=data_collator,
+    )
+    trainer.train()
