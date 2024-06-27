@@ -58,4 +58,6 @@ GPU - For MetaLlama
 - Run chainlit run program.py
 
 <img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/62b74853-0a81-4162-8a2c-4623e2d43455">
+<img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/350f2cec-1dd8-4d00-af0f-d3094ca28e90">
+<img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/e50b2d4a-1d15-4bff-baac-7a8c17a29668">
 
