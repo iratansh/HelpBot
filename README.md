@@ -52,6 +52,7 @@ The `HelpBot` class integrates various functionalities:
 ### Requirements
 Python==3.8.19
 Chatterbot==1.0.4
+GPU - For MetaLlama
 
 ### How to Use
 - Run chainlit run program.py
