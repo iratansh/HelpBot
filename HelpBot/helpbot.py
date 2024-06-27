@@ -9,12 +9,14 @@ from PyDictionary import PyDictionary
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
 import yfinance as yf
-from transformers import pipeline
+from transformers import pipeline, AutoTokenizer
+from datasets import load_dataset
 import re
 import logging
 from collections import deque
 from google_trans_new import google_translator
 from MetaLlama import MetaLlama
+from transformers import DefaultDataCollator, AutoModelForQuestionAnswering, TrainingArguments, Trainer
 
 class HelpBot:
     def __init__(self):
