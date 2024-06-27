@@ -478,24 +478,24 @@ class HelpBot:
 
 if __name__ == "__main__":
     # OPTIONAL : if you want to train the model from scratch using the squad dataset
-    bot = HelpBot()
-    tokenized_squad = bot.squad.map(bot.preprocess_function, batched=True)
-    data_collator = DefaultDataCollator()
-    training_args = TrainingArguments(
-    output_dir="./results",
-    evaluation_strategy="epoch",
-    learning_rate=2e-5,
-    per_device_train_batch_size=2,
-    per_device_eval_batch_size=2,
-    num_train_epochs=2,
-    weight_decay=0.01,
-    )
-    trainer = Trainer(
-    model=bot.generation_pipeline,  # If you are not using MetaLlama and are using an untrained model
-    args=training_args,
-    train_dataset=tokenized_squad["train"],
-    eval_dataset=tokenized_squad["validation"],
-    tokenizer=bot.tokenizer,
-    data_collator=data_collator,
-    )
-    trainer.train()
+    # bot = HelpBot()
+    # tokenized_squad = bot.squad.map(bot.preprocess_function, batched=True)
+    # data_collator = DefaultDataCollator()
+    # training_args = TrainingArguments(
+    # output_dir="./results",
+    # evaluation_strategy="epoch",
+    # learning_rate=2e-5,
+    # per_device_train_batch_size=2,
+    # per_device_eval_batch_size=2,
+    # num_train_epochs=2,
+    # weight_decay=0.01,
+    # )
+    # trainer = Trainer(
+    # model=bot.generation_pipeline,  # If you are not using MetaLlama and are using an untrained model
+    # args=training_args,
+    # train_dataset=tokenized_squad["train"],
+    # eval_dataset=tokenized_squad["validation"],
+    # tokenizer=bot.tokenizer,
+    # data_collator=data_collator,
+    # )
+    # trainer.train()
