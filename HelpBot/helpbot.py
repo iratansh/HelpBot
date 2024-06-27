@@ -10,12 +10,11 @@ from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
 import yfinance as yf
 from transformers import pipeline
-from nltk.corpus import wordnet
 import re
 import logging
 from collections import deque
 from google_trans_new import google_translator
-from MultiDataSetTrainer import MultiDatasetTrainer
+from MetaLlama import MetaLlama
 
 class HelpBot:
     def __init__(self):
@@ -26,19 +25,16 @@ class HelpBot:
         """
         # Initialize Spacy model and other components
         self.nlp = spacy.load("en_core_web_md")
-        self.help_bot = ChatBot('help_bot')
+        self.help_bot = ChatBot("HelpBot")
         self.trainer = ListTrainer(self.help_bot)
         self.API_KEY = '725fc8d670f044b4b6cab371441f9d59'
         self.last_result = None
-        self.summarization_pipeline = pipeline("summarization")
-        self.generation_pipeline = pipeline("text-generation", model="gpt2")
+        self.summarization_pipeline = pipeline("summarization", model="gpt2")
+        self.generation_pipeline = MetaLlama()
         self.train_conversations_from_file('conversations.txt')
         logging.basicConfig(level=logging.INFO)
         self.context = deque(maxlen=10)  # Keep track of context
         self.translator = google_translator()
-        self.trainer = MultiDatasetTrainer(model_name='gpt2')
-        datasets = ['hotpotqa/hotpot_qa', "tau/commonsense_qa", "allenai/break_data"] 
-        self.trainer.train(datasets)
 
     def train_conversations_from_file(self, filename):
         """
@@ -56,21 +52,6 @@ class HelpBot:
                         self.trainer.train(upper_conversation)
         except Exception as e:
             logging.error(f"Error training conversations from file: {e}")
-
-    def load_and_train_dataset(self, filepath):
-        """
-        Load a dataset from a file and train the bot.
-        Input: filepath (str)
-        Output: None
-        """
-        try:
-            with open(filepath, 'r') as file:
-                conversations = file.readlines()
-                cleaned_conversations = [line.strip().upper() for line in conversations if line.strip()]
-                self.trainer.train(cleaned_conversations)
-                logging.info(f"Training completed with dataset from {filepath}")
-        except Exception as e:
-            logging.error(f"Error loading and training dataset: {e}")
 
     def access_webpage(self, url):
         """
@@ -314,16 +295,12 @@ class HelpBot:
 
     def generate_response(self, statement):
         """
-        Generate a response to the user's input using a text generation model.
+        Generate a response to the user's input using MetaLlama3.
         Input: statement (str)
         Output: generated response (str)
         """
-        try:
-            result = self.generation_pipeline(statement, max_length=100, num_return_sequences=1)
-            return result[0]['generated_text']
-        except Exception as e:
-            logging.error(f"Error generating response: {e}")
-            return "I'm not sure how to respond to that."
+        response = self.generation_pipeline.get_response(statement)
+        return response
 
     def get_current_time(self):
         """
