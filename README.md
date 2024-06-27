@@ -64,3 +64,5 @@ GPU - For MetaLlama
 <img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/a4b892d9-c6f7-4809-aa0e-aab019571424">
 <img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/6a9725b0-e407-4b1f-9495-2f2ef98a693e">
 <img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/06927430-c7be-494b-9765-052bab207038">
+<img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/0c01c28f-cbf4-4157-b50b-4f67c9de9edf">
+
