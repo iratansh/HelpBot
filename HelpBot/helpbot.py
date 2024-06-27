@@ -140,9 +140,6 @@ class HelpBot:
         if response.confidence > 0.5:
             return str(response)
         
-        # Store context for personalization and continuity
-        self.context.append(statement)
-        
         # Handle other types of queries
         doc = self.nlp(statement)
         if "time" in statement.lower() and not any(token.text in ['times', 'multiply'] for token in doc):
@@ -155,8 +152,6 @@ class HelpBot:
             return self.get_current_date()
         elif "webpage" in statement.lower() or self.contains_url(statement):
             return self.train_for_webpage_content(statement)
-        elif "wikipedia" in statement.lower():
-            return self.train_for_wikipedia(statement)
         elif self.contains_ticker_symbol(doc):
             ticker = self.extract_ticker_symbol(doc)
             if ticker:
@@ -169,6 +164,32 @@ class HelpBot:
             return self.train_for_translation(statement)
         else:
             return self.generate_response(statement)
+
+        def refers_to_last_calculation(self, statement):
+        """
+        Check if the user's statement refers to the last calculation.
+        Input: statement (str)
+        Output: True if referring to the last calculation, False otherwise
+        """
+        doc = self.nlp(statement)
+        return any(token.lemma_ in ["last", "previous"] for token in doc) and any(token.lemma_ in ["calculation", "result"] for token in doc)
+
+    def handle_last_calculation(self, statement):
+        """
+        Handle commands referring to the last calculation.
+        Input: statement (str)
+        Output: response (str)
+        """
+        if not self.context:
+            return "There is no previous calculation to refer to."
+
+        last_calculation = self.context[-1]
+        previous_result = float(last_calculation.split('=')[-1].strip())
+
+        # Remove references to "last calculation" from the statement
+        statement = re.sub(r'last calculation|previous result', str(previous_result), statement, flags=re.IGNORECASE)
+        
+        return self.simple_math_calculations(statement, previous_result=previous_result)
 
     def contains_ticker_symbol(self, doc):
         """
@@ -267,22 +288,24 @@ class HelpBot:
             logging.error(f"Error fetching ETF information: {e}")
             return "An error occurred while fetching the ETF information."
 
-    def simple_math_calculations(self, statement):
+        def simple_math_calculations(self, statement, previous_result=None):
         """
         Perform simple math calculations based on user's input.
-        Input: statement (str)
+        Input: statement (str), previous_result (float, optional)
         Output: calculation result (str)
         """
         tokens = self.nlp(statement)
         numbers = [float(token.text) for token in tokens if token.like_num]
         operators = [token.text for token in tokens if token.text in ['plus', 'minus', 'times', 'divided', '+', '-', '*', '/', 'x']]
 
+        # Include previous result in calculations if provided
+        if previous_result is not None:
+            numbers.insert(0, previous_result)
+
         # Check if we have two numbers and one operator
         if len(numbers) == 2 and len(operators) == 1:
             num1, num2 = numbers
             operator = operators[0]
-
-            # Perform the calculation based on the operator
             if operator in ['plus', '+']:
                 result = num1 + num2
             elif operator in ['minus', '-']:
@@ -293,10 +316,14 @@ class HelpBot:
                 result = num1 / num2
             else:
                 return "Invalid operator."
+
+            # Append calculation result to context
+            self.context.append(f"{num1} {operator} {num2} = {result}")
             
             return f"The result of {num1} {operator} {num2} is {result}."
         else:
             return "Please provide a valid mathematical expression with two numbers and one operator."
+
 
     def generate_response(self, statement):
         """
@@ -338,20 +365,6 @@ class HelpBot:
             return self.access_webpage(url)
         else:
             return "Please provide a valid URL."
-
-    def train_for_wikipedia(self, statement):
-        """
-        Train the bot to handle requests for Wikipedia information.
-        Input: statement (str)
-        Output: Wikipedia summary (str)
-        """
-        try:
-            search_query = statement.lower().replace('wikipedia', '').strip()
-            summary = self.summarization_pipeline(search_query, max_length=150, min_length=30, do_sample=False)
-            return summary[0]['summary_text']
-        except Exception as e:
-            logging.error(f"Error summarizing Wikipedia content: {e}")
-            return "I couldn't retrieve the Wikipedia summary."
 
     def train_for_dictionary(self, statement):
         """
