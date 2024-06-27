@@ -1,18 +1,12 @@
 from helpbot import HelpBot
+import chainlit as cl
 
-def main():
-    """
-    Main program function
-    """
-    bot = HelpBot()
-    while True:
-        statement = input("You: ")
-        exit_keywords = ["exit", "bye", "quit", "stop", "end"]
-        if statement.lower() in exit_keywords:
-            print("Goodbye!")
-            break
-        response = bot.respond_to_user(statement)
-        print("HelpBot:", response)
+bot = HelpBot()
 
-if __name__ == "__main__":
-    main()
+@cl.on_message 
+async def main(message: cl.Message):
+    """
+    Main function.
+    """  
+    response = bot.respond_to_user(message.content)
+    await cl.Message(response).send()
