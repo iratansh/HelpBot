@@ -49,5 +49,12 @@ The `HelpBot` class integrates various functionalities:
 - **Summarization and Translation**: Summarizes text and translates text between languages.
 - **Ticker Symbol Handling**: Extracts and fetches information for stock and ETF ticker symbols.
 
+### Requirements
+Python==3.8.19
+Chatterbot==1.0.4
+
+### How to Use
+- Run chainlit run program.py
+
 <img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/62b74853-0a81-4162-8a2c-4623e2d43455">
 
