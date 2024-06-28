@@ -50,9 +50,10 @@ The `HelpBot` class integrates various functionalities:
 - **Ticker Symbol Handling**: Extracts and fetches information for stock and ETF ticker symbols.
 
 ### Requirements
-Python==3.8.19
-Chatterbot==1.0.4
-GPU - For MetaLlama
+- Python==3.8.19
+- Chatterbot==1.0.4
+- GPU - For MetaLlama
+- ~20GB storage space (for MetaLlama or for model training)
 
 ### How to Use
 - Run chainlit run program.py
