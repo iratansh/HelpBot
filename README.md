@@ -2,6 +2,9 @@
 
 The `HelpBot` program is an intelligent assistant capable of handling a variety of tasks, including weather queries, webpage access, math calculations, stock and ETF information retrieval, text summarization, and translation. It leverages several advanced technologies and libraries to achieve this functionality.
 
+References:
+https://www.youtube.com/watch?v=J7afRW5XEb4&t=375s
+
 ### Key Components and Technologies
 
 1. **Libraries and Technologies:**
