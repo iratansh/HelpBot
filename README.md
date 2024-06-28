@@ -2,9 +2,6 @@
 
 The `HelpBot` program is an intelligent assistant capable of handling a variety of tasks, including weather queries, webpage access, math calculations, stock and ETF information retrieval, text summarization, and translation. It leverages several advanced technologies and libraries to achieve this functionality.
 
-References:
-https://www.youtube.com/watch?v=J7afRW5XEb4&t=375s
-
 ### Key Components and Technologies
 
 1. **Libraries and Technologies:**
@@ -70,3 +67,5 @@ The `HelpBot` class integrates various functionalities:
 <img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/06927430-c7be-494b-9765-052bab207038">
 <img width="1511" alt="image" src="https://github.com/iratansh/HelpBot/assets/151393106/0c01c28f-cbf4-4157-b50b-4f67c9de9edf">
 
+References:
+https://www.youtube.com/watch?v=J7afRW5XEb4&t=375s
