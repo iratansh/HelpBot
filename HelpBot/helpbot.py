@@ -477,7 +477,7 @@ def access_webpage(self, url):
             return inputs
 
 if __name__ == "__main__":
-    # OPTIONAL : if you want to train the model from scratch using the squad dataset
+    # OPTIONAL BUT HIGHLY RECOMMENED: if you want to train the model from using the squad dataset
     # bot = HelpBot()
     # tokenized_squad = bot.squad.map(bot.preprocess_function, batched=True)
     # data_collator = DefaultDataCollator()
