@@ -2,6 +2,9 @@
 
 The `HelpBot` program is an intelligent assistant capable of handling a variety of tasks, including weather queries, webpage access, math calculations, stock and ETF information retrieval, text summarization, and translation. It leverages several advanced technologies and libraries to achieve this functionality.
 
+### Limitations
+When asking very complex questions the chatbot will face some issues with determining the user's intentions and outputting an appropriate result. Higher accuracy can be gained by further training the model on broader datasets but it will be hardware heavy to do so. If the chatbot can't understand the user's input, the chatbot will rely on Meta-Llama-3 for generative AI which may or may not generate an acceptable response to the input. 
+
 ### Key Components and Technologies
 
 1. **Libraries and Technologies:**
